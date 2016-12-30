@@ -3,13 +3,15 @@ function Stone(){
   this.y = random(height);
   this.r = 10;
   this.eaten = false;
-  this.color =  color(10, 206, 15)   
+  this.color =  color(10, 206, 15); 
 
   this.move = function(newX, newY) {
       this.x = newX;
       this.y = newY;
   };
-
+  this.highlight = function(newX, newY) {
+    this.color =  color(10, 206, 15,155)   
+  };
   this.display = function() {
     fill(this.color);
     stroke(0);
