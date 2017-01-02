@@ -1,90 +1,107 @@
 var SquareSize = 100;
-var BigStone = [];
+//var BigStone = [];
 var BigStoneR = 30;
+var BigStoneColor;
 
-var SmallStone = []
-var SmallStonePerSq = 5;
+//var SmallStone = []
+var SmallStonePerSq = 25;
 var SmallStoneR = 15;
+var SmallStoneColor;
 
 var NPlayer = 2;
 
+var TheBlock = [];
+var BlockColor;
+var HlBlockColor;
+
 function setup() {
-  createCanvas(700, 200);
-  var BigStoneColor = color(255,255,123,150);
-  var SmallStoneColor = color(122,234,0,123);
+  createCanvas(700, 201);
 
+  BigStoneColor = color(255,255,123,150);
+  SmallStoneColor = color(122,234,0,123);
+  BlockColor = color(200,200,200);
+  HlBlockColor = color(200,0,0);
 
-  for (var i=0; i<NPlayer;i++){
-    BigStone[i] = new Stone();
-    BigStone[i].r = BigStoneR;
-    BigStone[i].x = SquareSize*(i*6+1/2);
-    BigStone[i].y = SquareSize;
-    BigStone[i].color = BigStoneColor;
-    
-  }
-  for (var i=0; i<NPlayer;i++){ //*SmallStonePerSq*5
-    for (var j=0; j<5;j++){
-      for (var k=0; k<SmallStonePerSq;k++){
-        var index = i*SmallStonePerSq*5+j*SmallStonePerSq+k;
-        SmallStone[index] = new Stone();
-        SmallStone[index].r = SmallStoneR;
-        SmallStone[index].color = SmallStoneColor;
-        SmallStone[index].x = random(SquareSize*(j+1.15+k*0.1),SquareSize*(j+1.15+k*0.2));
-        SmallStone[index].y = random(SquareSize*(i+1/7),SquareSize*(i+6/7));
-      }  
+  for (var i=0; i<NPlayer; i++){
+    TheBlock[i] = [];
+    for (var j=0; j<6;j++){
+      TheBlock[i][j] = new Block();
+      TheBlock[i][j].player = i;
+      TheBlock[i][j].pos = j;
+      if (j==0) {
+        TheBlock[i][j].quan =true;
+        TheBlock[i][j].BigStone = 1;
+        TheBlock[i][j].SmallStone = 0;
+        TheBlock[i][j].y = 0;
+        if (i==0) {
+          TheBlock[i][j].x = 0; 
+        } else {
+          TheBlock[i][j].x = 6*SquareSize;
+        }
+      } else {
+        TheBlock[i][j].y = i*SquareSize;
+        TheBlock[i][j].x = j*SquareSize;
+        TheBlock[i][j].BigStone = 0;
+        TheBlock[i][j].SmallStone = SmallStonePerSq;
+      }
     }
   }
+
+
 }
 
 function draw() {
   background(255);
   DrawTable();
-  DrawStones();
   
   
 }
 
 function DrawTable(){
-  fill(183);
-  stroke(0);
-  arc(SquareSize, SquareSize, SquareSize*2, SquareSize*2, 0, 2*PI, OPEN);
-  arc(width-SquareSize, SquareSize, SquareSize*2, SquareSize*2, 0, 2*PI, OPEN);
-  
-  for (var i=1; i<=5;i++){
-    rect(i*SquareSize,0,SquareSize,SquareSize);
-    rect(i*SquareSize,SquareSize-1,SquareSize,SquareSize);
+  for (var i=0; i<NPlayer; i++){
+    TheBlock[i][0].display();
   }
+  for (var i=0; i<NPlayer; i++){
+    for (var j=1; j<6;j++){
+      TheBlock[i][j].display();
+    }
+  } 
+
 }
 
-function DrawStones(){
-  for (var i=0; i<NPlayer;i++){
-    BigStone[i].display();
-  }
-  for (var i=0; i<NPlayer*SmallStonePerSq*5;i++){
-    SmallStone[i].display();
-  }
-}
 
 function mousePressed() {
-  var hlX = int(mouseX/SquareSize);
-  var hlY = int(mouseY/SquareSize);
-  var HLStoneColor = color(255,100,100,150);
-  var BigStoneColor = color(255,255,123,150);
-  var SmallStoneColor = color(122,234,0,123);
-  for (var i=0; i<NPlayer;i++){
+  var hlX = int(mouseX);
+  var hlY = int(mouseY);
+  var hlPlayer = 0;
+  var hlBlock = 0;
+  for (var i=0; i<NPlayer; i++){
+    for (var j=0; j<6; j++){
+      if (mouseX >= TheBlock[i][j].x && mouseX < TheBlock[i][j].x+SquareSize) {
+        if (mouseY >= TheBlock[i][j].y && mouseY < TheBlock[i][j].y+SquareSize && j != 0) {
+          //TheBlock[i][j].selected == true;
+          hlPlayer = i;
+          hlBlock = j;
+        }
+        if (mouseY >= TheBlock[i][j].y && mouseY < TheBlock[i][j].y+2*SquareSize && j == 0) {
+          //TheBlock[i][j].selected == true;
+          hlPlayer = i;
+          hlBlock = j;   
+        } 
+      }
+    }
     
-    if (int(BigStone[i].x/SquareSize) == hlX && int(BigStone[i].y/SquareSize) == hlY  ) {
-      BigStone[i].color = HLStoneColor;
-    } else {
-      BigStone[i].color = BigStoneColor;
-    }
+
   }
-  for (var i=0; i<NPlayer*SmallStonePerSq*5;i++){
-    if (int(SmallStone[i].x/SquareSize) == hlX && int(SmallStone[i].y/SquareSize) == hlY ) {
-      SmallStone[i].color = HLStoneColor;
-    } else {
-      SmallStone[i].color = SmallStoneColor;
+    print("hlPlayer = "+str(hlPlayer)+", hlBlock="+str(hlBlock));
+    for (var i=0; i<NPlayer; i++){
+    for (var j=0; j<6; j++){ 
+      if (hlPlayer == i && hlBlock == j) {
+        TheBlock[i][j].selected = !TheBlock[i][j].selected;
+      } else{ 
+        TheBlock[i][j].selected = false;
+      }
     }
-  }
+    } 
 }
 
