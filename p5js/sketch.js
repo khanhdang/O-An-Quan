@@ -1,14 +1,13 @@
 var SquareSize = 100;
-//var BigStone = [];
 var BigStoneR = 30;
 var BigStoneColor;
 
-//var SmallStone = []
-var SmallStonePerSq = 25;
+var SmallStonePerSq = 5;
 var SmallStoneR = 15;
 var SmallStoneColor;
 
 var NPlayer = 2;
+var PlayerTurn = 0;
 
 var TheBlock = [];
 var BlockColor;
