@@ -13,13 +13,17 @@ var TheBlock = [];
 var BlockColor;
 var HlBlockColor;
 
+
+var DirectionShow = 0;
+var ToMove = false;
+
 function setup() {
-  createCanvas(700, 201);
+  createCanvas(700, 221);
 
   BigStoneColor = color(255,255,123,150);
   SmallStoneColor = color(122,234,0,123);
   BlockColor = color(200,200,200);
-  HlBlockColor = color(200,0,0);
+  HlBlockColor = color(200,200,0);
 
   for (var i=0; i<NPlayer; i++){
     TheBlock[i] = [];
@@ -52,8 +56,8 @@ function setup() {
 function draw() {
   background(255);
   DrawTable();
-  
-  
+  DrawDirection();
+  DrawInformation();
 }
 
 function DrawTable(){
@@ -89,18 +93,66 @@ function mousePressed() {
         } 
       }
     }
-    
-
-  }
-    print("hlPlayer = "+str(hlPlayer)+", hlBlock="+str(hlBlock));
+  }               
+  //
+  if (ToMove){
     for (var i=0; i<NPlayer; i++){
-    for (var j=0; j<6; j++){ 
-      if (hlPlayer == i && hlBlock == j) {
-        TheBlock[i][j].selected = !TheBlock[i][j].selected;
-      } else{ 
-        TheBlock[i][j].selected = false;
+      for (var j=0; j<6; j++){ 
+        // check if the mouse click to the triangle
+        if (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j-1){
+          print("LEFT");
+        } else if (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j+1){
+          print("RIGHT");
+        } else if  (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j){
+          TheBlock[i][j].selected = false;
+          ToMove = false;
+          print ("NO MOVE");
+        }
       }
     }
+  } else {
+
+    //print("hlPlayer = "+str(hlPlayer)+", hlBlock="+str(hlBlock));
+    for (var i=0; i<NPlayer; i++){
+      for (var j=1; j<6; j++){ 
+        if (hlPlayer == i && hlBlock == j) {
+          TheBlock[i][j].selected = !TheBlock[i][j].selected;
+          ToMove = !ToMove;
+          print("MOVE");
+        } else{ 
+          TheBlock[i][j].selected = false;
+        }
+      }
     } 
+  }
 }
 
+function DrawDirection() {
+  for (var i=0; i<NPlayer; i++){
+    for (var j=0; j<6; j++){ 
+      if (TheBlock[i][j].selected) {
+        DirectionShow++;
+        if (DirectionShow < 60) {
+          DirectionShow++;
+          fill(HlBlockColor);
+          stroke(0);
+          triangle(TheBlock[i][j].x-0.1*SquareSize, TheBlock[i][j].y+0.1*SquareSize, TheBlock[i][j].x-0.1*SquareSize, TheBlock[i][j].y+0.9*SquareSize,  TheBlock[i][j].x-SquareSize/3, TheBlock[i][j].y+SquareSize/2);
+          triangle(TheBlock[i][j].x+1.1*SquareSize, TheBlock[i][j].y+0.1*SquareSize, TheBlock[i][j].x+1.1*SquareSize, TheBlock[i][j].y+0.9*SquareSize,  TheBlock[i][j].x+SquareSize*4/3, TheBlock[i][j].y+SquareSize/2);
+        } else {
+          DirectionShow++;
+          if (DirectionShow == 120 )
+          DirectionShow=0;
+        }
+
+        
+      }
+     
+    }
+  }      
+}
+
+function DrawInformation() {
+  fill(0);
+  textSize(10);
+  text("PLAYER: "+str(PlayerTurn)+"/"+str(NPlayer)+" || MOVE? "+str(ToMove),SquareSize, 215)
+}
