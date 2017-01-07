@@ -20,8 +20,8 @@ var ToMove = false;
 function setup() {
   createCanvas(700, 221);
 
-  BigStoneColor = color(255,255,123,150);
-  SmallStoneColor = color(122,234,0,123);
+  BigStoneColor = color(255,255,123);
+  SmallStoneColor = color(122,234,0);
   BlockColor = color(200,200,200);
   HlBlockColor = color(200,200,0);
 
@@ -34,7 +34,7 @@ function setup() {
       if (j==0) {
         TheBlock[i][j].quan =true;
         TheBlock[i][j].BigStone = 1;
-        TheBlock[i][j].SmallStone = 0;
+        TheBlock[i][j].SmallStone = 10;
         TheBlock[i][j].y = 0;
         if (i==0) {
           TheBlock[i][j].x = 0; 
@@ -101,12 +101,39 @@ function mousePressed() {
         // check if the mouse click to the triangle
         if (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j-1){
           print("LEFT");
+          MoveStones("LEFT",i,j);
+          TheBlock[i][j].selected = false;
+          ToMove = false; 
         } else if (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j+1){
           print("RIGHT");
+          MoveStones("RIGHT",i,j);
+          TheBlock[i][j].selected = false;
+          ToMove = false; 
         } else if  (TheBlock[i][j].selected && hlPlayer == i && hlBlock == j){
           TheBlock[i][j].selected = false;
           ToMove = false;
           print ("NO MOVE");
+        } else  if  (TheBlock[i][j].selected) {
+          if (i==1 && j==1 && hlPlayer == 0 && hlBlock == 0) {
+            print("LEFT");
+            MoveStones("LEFT",i,j);
+            TheBlock[i][j].selected = false;
+            ToMove = false;  
+          }
+          if (i==0 && j==5 && hlPlayer == 1 && hlBlock == 0) {
+            print("RIGHT");
+            MoveStones("RIGHT",i,j);
+            TheBlock[i][j].selected = false;
+            ToMove = false;  
+          } 
+          if (i==1 && j==5 && hlPlayer == 1 && hlBlock == 0) {
+            print("RIGHT");
+            MoveStones("RIGHT",i,j);
+            TheBlock[i][j].selected = false;
+            ToMove = false;  
+          }  
+          print("Curr "+str(i)+"/"+str(j));
+          print("HL "+str(hlPlayer)+"/"+str(hlBlock));
         }
       }
     }
@@ -144,9 +171,7 @@ function DrawDirection() {
           DirectionShow=0;
         }
 
-        
       }
-     
     }
   }      
 }
@@ -155,4 +180,48 @@ function DrawInformation() {
   fill(0);
   textSize(10);
   text("PLAYER: "+str(PlayerTurn)+"/"+str(NPlayer)+" || MOVE? "+str(ToMove),SquareSize, 215)
+}
+
+function MoveStones(Direction, Player, Block){
+  var BSmallStones = TheBlock[Player][Block].SmallStone;
+  var BLargeStones = TheBlock[Player][Block].LargeStone;
+  TheBlock[Player][Block].SmallStone = 0;
+  TheBlock[Player][Block].LargeStone = 0;
+  if (Direction == "LEFT") {
+    while (BSmallStones > 0) {
+      for (var i = Block-1; i > 0; i--){
+        TheBlock[Player][i].SmallStone++;
+        BSmallStones--;
+        if (BSmallStones == 0) break;
+      }
+      TheBlock[1-Player][0].SmallStone++;
+      BSmallStones--;
+      if (BSmallStones == 0) break;
+      for (var i = 1; i < 6; i++){
+        TheBlock[1-Player][i].SmallStone++;
+        BSmallStones--;
+        if (BSmallStones == 0) break;
+      }
+      BSmallStones = 0;
+    }
+  } else {
+    // "RIGHT"
+    while (BSmallStones > 0) {
+      for (var i = Block+1; i < 6; i++){
+        TheBlock[Player][i].SmallStone++;
+        BSmallStones--;
+        if (BSmallStones == 0) break;
+      }
+
+      TheBlock[1-Player][0].SmallStone++;
+      BSmallStones--;
+      if (BSmallStones == 0) break;
+      for (var i = 5; i > 0; i--){
+        TheBlock[1-Player][i].SmallStone++;
+        BSmallStones--;
+        if (BSmallStones == 0) break;
+      }
+      BSmallStones = 0;
+    }  
+  }
 }

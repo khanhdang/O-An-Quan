@@ -27,34 +27,99 @@ function Block(){
     }
 
     // draw stones
-   if (this.quan) {
+    if (this.quan) {
       if (this.player==0){
         fill(BigStoneColor);
         for (var i = 0; i < this.BigStone; i++) {
-          ellipse(this.x+SquareSize/2, this.y+SquareSize, BigStoneR, BigStoneR);
+          ellipse(this.x+SquareSize/2, this.y+SquareSize*1/2, BigStoneR, BigStoneR);
         }  
 
-        fill(SmallStoneColor);
-        for (var i = 0; i < this.SmallStone; i++) {
-          ellipse(this.x, this.y, SmallStoneR, SmallStoneR);
-        }    
+        if (this.SmallStone < 20) {
+          for (var i = 0; i < this.SmallStone; i++) {
+            stroke(0);
+            fill(SmallStoneColor);
+            var rowstone = floor(i/5);
+            var colstone = int(i%5);
+            var xstone = this.x+SmallStoneR*(colstone*1.2+1);
+            var ystone = this.y+SquareSize*1.8/3+SmallStoneR*(rowstone*1.2+1);
+            ellipse(xstone, ystone, SmallStoneR, SmallStoneR);
+            textSize(SmallStoneR/1.5);
+            noStroke();
+            fill(0);
+            textAlign(CENTER,CENTER);
+            text(str(i),xstone,ystone)   
+          }    
+        } else { 
+          stroke(0);
+          fill(SmallStoneColor);
+          var xstone = this.x+SmallStoneR;
+          var ystone = this.y+SquareSize*1.8/3+SmallStoneR;
+          for (var z=3; z>=0; z--) {
+            ellipse(xstone+2*z, ystone+z, SmallStoneR, SmallStoneR);
+          }
+          textSize(SmallStoneR/1.5);
+          noStroke();
+          fill(0);
+          textAlign(CENTER,CENTER);
+          text(str(this.SmallStone),xstone,ystone)    
+        }
       } else {
         fill(BigStoneColor);
         for (var i = 0; i < this.BigStone; i++) {
-          ellipse(this.x+SquareSize/2, this.y+SquareSize, BigStoneR, BigStoneR);
-        }   
+          ellipse(this.x+SquareSize/2, this.y+SquareSize*3/2, BigStoneR, BigStoneR);
+        }  
+        
+        if (this.SmallStone < 20) {
+          for (var i = 0; i < this.SmallStone; i++) {
+            stroke(0);
+            fill(SmallStoneColor);
+            var rowstone = floor(i/5);
+            var colstone = int(i%5);
+            var xstone = this.x+SmallStoneR*(colstone*1.2+1);
+            var ystone = this.y+SquareSize*1.8/3+SmallStoneR*(rowstone*1.2+1);
+            ellipse(xstone, ystone, SmallStoneR, SmallStoneR);
+            textSize(SmallStoneR/1.5);
+            noStroke();
+            fill(0);
+            textAlign(CENTER,CENTER);
+            text(str(i),xstone,ystone)   
+          }    
+        } else { 
+          stroke(0);
+          fill(SmallStoneColor);
+          var xstone = this.x+SmallStoneR;
+          var ystone = this.y+SquareSize*1.8/3+SmallStoneR;
+          for (var z=3; z>=0; z--) {
+            ellipse(xstone+2*z, ystone+z, SmallStoneR, SmallStoneR);
+          }
+          textSize(SmallStoneR/1.5);
+          noStroke();
+          fill(0);
+          textAlign(CENTER,CENTER);
+          text(str(this.SmallStone),xstone,ystone)    
+        }                              
       }
     } else {
 
-      fill(SmallStoneColor);
       for (var i = 0; i < this.SmallStone; i++) {
+        stroke(0);
+        fill(SmallStoneColor);
         var rowstone = floor(i/5);
         var colstone = int(i%5);
         var xstone = this.x+SmallStoneR*(colstone*1.2+1);
         var ystone = this.y +SmallStoneR*(rowstone*1.2+1);
         ellipse(xstone, ystone, SmallStoneR, SmallStoneR);
+        textSize(SmallStoneR/1.5);
+        noStroke();
+        fill(0);
+        textAlign(CENTER,CENTER);
+        text(str(i),xstone,ystone)
       }    
     }                  
+    fill (100);
+    noStroke();
+    textSize(10);
+    text(str(this.player)+"/"+str(this.pos)+"/",this.x+0.1*SquareSize,this.y+SquareSize/2); 
   }
 
 }
